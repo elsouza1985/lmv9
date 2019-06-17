@@ -1,0 +1,177 @@
+﻿@model IEnumerable<lmv9.Models.appointment>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.customer.person.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.appointment_date_in)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.appointment_date_out)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+       
+        <td>
+            @Html.DisplayFor(modelItem => item.customer.person.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.appointment_date_in)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.appointment_date_out)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.appointment_id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.appointment_id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.appointment_id })
+        </td>
+    </tr>
+}
+
+</table>
+<div class="container">
+    <script type="text/javascript" src="../assets/js/agenda-ajax.js"></script>
+    <style>
+        .css-class-to-highlight {
+            border: 1px solid #dc3545 !important;
+            background: #dc3545 !important;
+        }
+
+        .event a {
+            background: #dc3545 !important;
+            color: #f5f7fb !important;
+        }
+    </style>
+    <script>
+
+//var disabledDays = ["2018-7-21","2018-7-24","2018-7-27","2018-7-28"];
+
+$( function() {
+
+    $( "#txtdataAgenda" ).datepicker({
+    	 onSelect: function(dateText) {
+        	 $('#dataAgenda').val(this.value);
+      		 manageData(this.value);
+    	      $(this).change();
+    	    },
+    	    dateFormat: 'yy-mm-dd',
+    	    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+    	    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+    	    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+    	    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+    	    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+    	    nextText: 'Próximo',
+    	    prevText: 'Anterior'
+
+    	  });
+
+
+  } );
+$( document ).ready(function() {
+$("#Agendamento-modal").on('show.bs.modal', function (event) {
+	var dados = event.relatedTarget.dataset;
+	fillAgendamento(dados);
+});
+$('.fe-chevron-right').on('click',function(){
+	var novaData = new Date($('#dataAgenda').val()+' 00:00:00');
+	novaData.setDate(novaData.getDate() + 1);
+	$('#txtdataAgenda').val(formatar(novaData));
+	novaData = formatDateSQL(novaData);
+	$('#dataAgenda').val(novaData);
+	manageData(novaData);
+});
+$('.fe-chevron-left').on('click',function(){
+	var novaData = new Date($('#dataAgenda').val()+' 00:00:00');
+	novaData.setDate(novaData.getDate() - 1);
+	$('#txtdataAgenda').val(formatar(novaData));
+	novaData = formatDateSQL(novaData);
+	$('#dataAgenda').val(novaData);
+	manageData(novaData);
+});
+});
+
+    </script>
+
+
+
+    <div class="form-group" style="background-color: aliceblue; text-align: center">
+        <h2>Agenda</h2>
+    </div>
+
+
+    <div class="form-group" style="text-align: center">
+        <div>
+            <a href="#"><i class="fe fe-chevron-left" style="margin-right: 10px"></i></a>
+            <input type="hidden" id="dataAgenda" value="2019-06-13">
+            <input type="text" id="txtdataAgenda" readonly="true" style="border: 0px; width: 195px;" class="hasDatepicker"> <a href="#"><i class="fe fe-chevron-right" style="margin-left: 10px"></i></a>
+
+        </div>
+        <div id="divHorarios"><div class="form-group"><hr><label class="form-label">Manhã</label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="8" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">8:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="9" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">9:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="10" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">10:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="11" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">11:00</span></label></div><div class="form-group"><hr><label class="form-label">Tarde</label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="12" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">12:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="13" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">13:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="14" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">14:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="15" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">15:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="16" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">16:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="17" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">17:00</span></label></div><div class="form-group"><hr><label class="form-label">Noite</label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="18" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">18:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="19" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">19:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="20" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">20:00</span></label></div><div class="selectgroup selectgroup-pills"><label class="selectgroup-item"> <input type="button" name="value" class="selectgroup-input" data-toggle="modal" data-target="#Agendamento-modal" data-agenda="2019-06-13" data-horario="21" data-agendado="false"> <span class="selectgroup-button" style="background-color: palegreen; color: white; font-weight: bold;">21:00</span></label></div></div>
+    </div>
+
+    <!-- Modal de Agendamento-->
+
+    <div class="modal fade" id="Agendamento-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: aliceblue;">
+                    <h2>Agendamento</h2>
+                </div>
+                <div class="modal-body">
+                    <table class="table card-table table-striped table-vcenter" id="tblModalAgenda">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <label id="modal-AgendaData"></label>
+                                    <br> Horario: <label id="modal-AgendaHorario"></label>:00 hrs
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="w-1"><span class="avatar">ES</span></td>
+                                <td>Erick Souza</td>
+                            </tr>
+                            <tr>
+                                <td>Contato</td>
+                                <td>
+                                    <a class="icon" href="https://api.whatsapp.com/send?phone=5511991012655&amp;text=teste">
+                                        <i class="fa fa-whatsapp" style="font-size: x-large; padding: 10px;"></i>
+                                    </a> <a href="tel:11984488400">
+                                        <i class="fa fa-phone" style="font-size: x-large; padding: 10px;"></i>
+                                    </a> <a href="sms:11984488400&quot;">
+                                        <i class="fa fa-wpforms" style="font-size: x-large; padding: 10px;"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer" style="display: none">
+                    <a id="confirm" class="btn btn-primary" href="#">Desmarcar</a> <a id="cancel" class="btn btn-default" data-dismiss="modal">Não</a>
+                    <input type="hidden" value="false" id="isNewUser">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal -->
+
+</div>
