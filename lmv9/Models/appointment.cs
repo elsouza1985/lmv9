@@ -10,10 +10,10 @@ namespace lmv9.Models
     {
         [Key]
         public int appointment_id { get; set; }
-
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMM/yyyy}")]
         [Column(TypeName = "datetime2")]
         public DateTime appointment_date_in { get; set; }
-
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMM/yyyy}")]
         [Column(TypeName = "datetime2")]
         public DateTime appointment_date_out { get; set; }
 
