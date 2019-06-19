@@ -191,6 +191,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\inventory.cs" />
     <Compile Include="Models\item.cs" />
+    <Compile Include="Models\lmv9Data.cs" />
     <Compile Include="Models\lmv9Model.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\module.cs" />
