@@ -10,6 +10,7 @@ namespace lmv9.Controllers
     {
         public ActionResult Index()
         {
+            Session.Add("company_id", 1);
             return View();
         }
 

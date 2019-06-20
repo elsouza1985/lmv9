@@ -4,82 +4,74 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Create</h2>
-
-
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>appointment</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.appointment_date_in, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.appointment_date_in, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.appointment_date_in, "", new { @class = "text-danger" })
-            </div>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="modal-content">
+        <div class="modal-header" style="background-color: aliceblue;">
+            <h2>Agendamento</h2>
         </div>
+        <div class="modal-body">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <table class="table card-table table-striped table-vcenter" id="tblModalAgenda">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <label id="modal-AgendaData" >Quarta-feira, 19 de Junho de 2019</label>
+                            <input type="hidden" id="dataEntrada" name="dataEntrada" value="19/06/2019 8:00:00 AM" />
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.appointment_date_out, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.appointment_date_out, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.appointment_date_out, "", new { @class = "text-danger" })
-            </div>
+                            <br> Horario: <label id="modal-AgendaHorario">8</label>:00 hrs
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" id="txtNomeCliente" placeholder="Nome" style="display:none">
+                            @Html.DropDownList("people", null, htmlAttributes: new { @class = "form-control" })
+                           @* @Html.ValidationMessageFor(model => model.customer_id, "", new { @class = "text-danger" })*@
+                        </td>
+                        <td class="w-1"><span class="avatar"><i class="fe fe-user-plus"></i></span></td>
+                    </tr>
+                    <tr id="txtNewUserContact" style="display:none">
+                        <td>
+                            <input type="tel" id="txtNumeroCliente" pattern="[0-9]*" placeholder="Contato" class="form-control" maxlength="15">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.customer_id, "customer_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("customer_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.customer_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.company_id, "company_id", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("company_id", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.company_id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+        <div class="modal-footer" style="">
+            <input type="submit" value="Marcar" class="btn btn-primary" />
+            @*<a id="confirm" class="btn btn-primary" href="#">Marcar</a>*@
+            <a id="cancel" class="btn btn-default" data-dismiss="modal">Não</a>
+            <input type="hidden" value="false" id="isNewUser">
         </div>
     </div>
-}
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript" language="javascript">
-            $(function () {
-                $('input[type=datetime]').datepicker({
-                    dateFormat: 'dd/mm/yy',
-                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    nextText: 'Proximo',
-                    prevText: 'Anterior',
-                    showOn: "button"
-                }).css("display", "inline-block")
+        $(function () {
+            $('input[type=datetime]').datepicker({
+                dateFormat: 'dd/mm/yy',
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                nextText: 'Proximo',
+                prevText: 'Anterior',
+                showOn: "button"
+            }).css("display", "inline-block")
                 .next("button").button({
                     icons: { primary: "ui-icon-calendar" },
                     label: "Selecione uma data",
                     text: false
                 });
-            });
+        });
     </script>
 }

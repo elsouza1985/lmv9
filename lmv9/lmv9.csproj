@@ -181,6 +181,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AgendaNovo.cs" />
     <Compile Include="Models\appointment.cs" />
     <Compile Include="Models\app_config.cs" />
     <Compile Include="Models\ClientComplete.cs" />

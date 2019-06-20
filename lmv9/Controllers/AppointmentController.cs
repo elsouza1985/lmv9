@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -39,8 +40,8 @@ namespace lmv9.Controllers
         // GET: Appointment/Create
         public ActionResult Create()
         {
-            ViewBag.company_id = new SelectList(db.companies, "company_id", "address");
-            ViewBag.customer_id = new SelectList(db.customers, "custumer_id", "gender");
+            ViewBag.people = new SelectList(db.customers, "custumer_id", "person.name");//new SelectList(db.customers.Join(db.people, t => t.people_id, peop => peop.people_id, (t, peop) => new { customer = peop, person = t }) , "people.people_id", "people.name");
+            //ViewBag.customer_id = new SelectList(db.customers, "custumer_id", "gender");
             return View();
         }
 
@@ -49,18 +50,26 @@ namespace lmv9.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "appointment_id,appointment_date_in,appointment_date_out,customer_id,company_id")] appointment appointment)
+        public ActionResult Create( string dataEntrada, string people)
         {
             if (ModelState.IsValid)
             {
-                db.appointments.Add(appointment);
+                CultureInfo culture = new CultureInfo("pt-BR");
+
+                AgendaNovo agendamento = new AgendaNovo{ clientID = int.Parse(people), dataEntrada = dataEntrada} ;
+                appointment app1 = new appointment();
+                app1.appointment_date_in = Convert.ToDateTime(agendamento.dataEntrada, culture);
+                customer client = db.customers.Where(t => t.custumer_id == agendamento.clientID).FirstOrDefault();
+                app1.customer_id = client.people_id;
+                app1.company_id = 1;
+                db.appointments.Add(app1);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.company_id = new SelectList(db.companies, "company_id", "address", appointment.company_id);
-            ViewBag.customer_id = new SelectList(db.customers, "custumer_id", "gender", appointment.customer_id);
-            return View(appointment);
+            //ViewBag.company_id = new SelectList(db.companies, "company_id", "address", appointment.company_id);
+            //ViewBag.customer_id = new SelectList(db.customers, "custumer_id", "gender", appointment.customer_id);
+            return View();
         }
 
         // GET: Appointment/Edit/5
